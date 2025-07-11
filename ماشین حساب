@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ماشین حساب</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        /* Style for preventing blue highlight on touch */
+        .calculator-btn {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 flex items-center justify-center min-h-screen transition-colors duration-500">
+
+    <div class="w-full max-w-sm mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
+        
+        <!-- Display Screen -->
+        <div class="p-6">
+            <input id="display" type="text" readonly
+                   class="w-full bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-white text-5xl text-left ltr rounded-lg p-4 focus:outline-none shadow-inner text-right">
+        </div>
+
+        <!-- Buttons Grid -->
+        <div class="grid grid-cols-4 gap-2 p-4">
+            <!-- Row 1 -->
+            <button onclick="clearDisplay()" class="calculator-btn text-2xl bg-red-500 hover:bg-red-600 text-white font-bold py-5 rounded-lg shadow-md transition-transform transform hover:scale-105 col-span-2">پاک کردن</button>
+            <button onclick="appendToDisplay('/')" class="calculator-btn text-2xl bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-5 rounded-lg shadow-md transition-transform transform hover:scale-105">÷</button>
+            <button onclick="appendToDisplay('*')" class="calculator-btn text-2xl bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-5 rounded-lg shadow-md transition-transform transform hover:scale-105">×</button>
+
+            <!-- Row 2 -->
+            <button onclick="appendToDisplay('7')" class="calculator-btn text-2xl bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-white font-bold py-5 rounded-lg shadow-md transition-transform transform hover:scale-105">۷</button>
+            <button onclick="appendToDisplay('8')" class="calculator-btn text-2xl bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-white font-bold py-5 rounded-lg shadow-md transition-transform transform hover:scale-105">۸</button>
+            <button onclick="appendToDisplay('9')" class="calculator-btn text-2xl bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-white font-bold py-5 rounded-lg shadow-md transition-transform transform hover:scale-105">۹</button>
+            <button onclick="appendToDisplay('-')" class="calculator-btn text-2xl bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-5 rounded-lg shadow-md transition-transform transform hover:scale-105">−</button>
+
+            <!-- Row 3 -->
+            <button onclick="appendToDisplay('4')" class="calculator-btn text-2xl bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-white font-bold py-5 rounded-lg shadow-md transition-transform transform hover:scale-105">۴</button>
+            <button onclick="appendToDisplay('5')" class="calculator-btn text-2xl bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-white font-bold py-5 rounded-lg shadow-md transition-transform transform hover:scale-105">۵</button>
+            <button onclick="appendToDisplay('6')" class="calculator-btn text-2xl bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-white font-bold py-5 rounded-lg shadow-md transition-transform transform hover:scale-105">۶</button>
+            <button onclick="appendToDisplay('+')" class="calculator-btn text-2xl bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-5 rounded-lg shadow-md transition-transform transform hover:scale-105">+</button>
+
+            <!-- Row 4 & 5 -->
+            <div class="grid grid-cols-3 gap-2 col-span-3">
+                <button onclick="appendToDisplay('1')" class="calculator-btn text-2xl bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-white font-bold py-5 rounded-lg shadow-md transition-transform transform hover:scale-105">۱</button>
+                <button onclick="appendToDisplay('2')" class="calculator-btn text-2xl bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-white font-bold py-5 rounded-lg shadow-md transition-transform transform hover:scale-105">۲</button>
+                <button onclick="appendToDisplay('3')" class="calculator-btn text-2xl bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-white font-bold py-5 rounded-lg shadow-md transition-transform transform hover:scale-105">۳</button>
+                <button onclick="appendToDisplay('0')" class="calculator-btn text-2xl bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-white font-bold py-5 rounded-lg shadow-md transition-transform transform hover:scale-105 col-span-2">۰</button>
+                <button onclick="appendToDisplay('.')" class="calculator-btn text-2xl bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-white font-bold py-5 rounded-lg shadow-md transition-transform transform hover:scale-105">.</button>
+            </div>
+            <button onclick="calculateResult()" class="calculator-btn text-2xl bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg shadow-md transition-transform transform hover:scale-105 row-span-2">=</button>
+        </div>
+    </div>
+
+    <script>
+        // Get the display element from the DOM
+        const display = document.getElementById('display');
+
+        /**
+         * Appends a given value to the calculator's display.
+         * @param {string} value - The character (number or operator) to add.
+         */
+        function appendToDisplay(value) {
+            display.value += value;
+        }
+
+        /**
+         * Clears the entire display.
+         */
+        function clearDisplay() {
+            display.value = '';
+        }
+
+        /**
+         * Calculates the result of the expression in the display.
+         * It uses the eval() function for simplicity.
+         * Includes error handling for invalid expressions.
+         */
+        function calculateResult() {
+            try {
+                // The eval function calculates the result of a string expression.
+                // Note: Using eval() can be a security risk if the input is not controlled.
+                // For this calculator, it's safe as we control the inputs.
+                const result = eval(display.value.replace('×', '*').replace('÷', '/'));
+                display.value = result;
+            } catch (error) {
+                // If an error occurs (e.g., invalid expression), display "خطا".
+                display.value = 'خطا';
+            }
+        }
+    </script>
+
+</body>
+</html>
+
